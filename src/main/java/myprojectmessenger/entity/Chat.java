@@ -2,6 +2,7 @@ package myprojectmessenger.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import myprojectmessenger.model.ChatType;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -17,6 +18,8 @@ public class Chat {
     private long id;
     private Date created;
     private String title;
+    @Enumerated(EnumType.STRING)
+    private ChatType type;
     @ManyToOne
     @JoinColumn(name = "author_id")
     private User author;

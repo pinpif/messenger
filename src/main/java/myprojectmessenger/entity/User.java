@@ -26,4 +26,7 @@ public class User {
 
     @OneToMany(mappedBy = "author")
     private List<Chat> chatList;
+
+    @OneToMany(mappedBy = "user")
+    private List<BlockList> blockLists;
 }

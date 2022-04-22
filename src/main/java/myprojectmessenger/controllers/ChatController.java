@@ -24,9 +24,9 @@ public class ChatController {
 
     @GetMapping
     public RecentChats chats(@RequestHeader(value = "SessionId") String sessionId) {
-        RecentChats recentChats= new RecentChats();
-        Set<Chat> chats= chatDao.findRecent10ChatsForUser(authorizationDao.findUserBySessionId(sessionId));
-        for (Chat chat:chats){
+        RecentChats recentChats = new RecentChats();
+        Set<Chat> chats = chatDao.findRecent10ChatsForUser(authorizationDao.findUserBySessionId(sessionId));
+        for (Chat chat : chats) {
             ChatDTO chatDTO = new ChatDTO();
             chatDTO.setTitle(chat.getTitle());
             chatDTO.setId(chat.getId());
@@ -38,7 +38,7 @@ public class ChatController {
 
     @PostMapping
     public RecentChats addChat(@RequestHeader(value = "SessionId") String sessionId,
-                              @RequestBody ChatModel chatModel) {
+                               @RequestBody ChatModel chatModel) {
         Chat chat = new Chat();
         Set<User> users = new HashSet<>();
         users.add(authorizationDao.findUserBySessionId(sessionId));
@@ -47,10 +47,11 @@ public class ChatController {
         chat.setCreated(new Date());
         chat.setUsers(users);
         chat.setTitle(chatModel.getTitle());
+        chat.setType(chatModel.getType());
         chatDao.addChat(chat);
         ChatDTO chatDTO = new ChatDTO();
         chatDTO.setTitle(chat.getTitle());
-        RecentChats recentChats= new RecentChats();
+        RecentChats recentChats = new RecentChats();
         recentChats.getChats().add(chatDTO);
         return recentChats;
     }
