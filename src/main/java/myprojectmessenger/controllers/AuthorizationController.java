@@ -22,7 +22,6 @@ public class AuthorizationController {
         this.authorizationDao = authorizationDao;
     }
 
-    // @RequestBody
     @PostMapping("/login")
     public SessionInfo authorization(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
@@ -34,29 +33,21 @@ public class AuthorizationController {
         String[] usernameAndPassword = usernamePassword.split(":");
         User user = authorizationDao.findUserByLoginAndPassword(usernameAndPassword[0], usernameAndPassword[1]);
         UUID uuid = UUID.randomUUID();
-        authorizationDao.addSession(user,uuid);
+        authorizationDao.addSession(user, uuid);
         response.setHeader("SessionId", uuid.toString());
         return new SessionInfo(user, uuid);
     }
-@Transactional
-@DeleteMapping("/api/logout")
-public void logout(@RequestHeader(value = "SessionId") String sessionId){
-        authorizationDao.logout(sessionId);
-}
 
-    // +Добавить таблицу, содержащую информацию о статусе сообщения (прочитано или не прочитано)
-    // +Добавить таблицу контактов пользователя
-    // +Добавить метод добавления пользователя в контакты
-    // +Добавить метод поиска пользователей по логину/имени
-    // +Добавить таблицу заблокированных пользователей
-    // +Добавить метод блокирования пользователя
-    // +Добавить метод разблокирования пользователя
-    // Добавить метод получения последних N (50) сообщений в чате
+    @Transactional
+    @DeleteMapping("/api/logout")
+    public void logout(@RequestHeader(value = "SessionId") String sessionId) {
+        authorizationDao.logout(sessionId);
+    }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    private class SessionInfo {
+    private static class SessionInfo {
         private User user;
         private UUID uuid;
     }

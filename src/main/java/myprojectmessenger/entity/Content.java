@@ -12,7 +12,7 @@ public class Content {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String text;
+    private String name;
     @Lob
     private byte[] content;
 }
