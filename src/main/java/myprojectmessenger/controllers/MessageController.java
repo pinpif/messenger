@@ -12,6 +12,7 @@ import myprojectmessenger.model.ContentDto;
 import myprojectmessenger.model.MessageDto;
 import myprojectmessenger.model.MessageModel;
 import myprojectmessenger.model.Messages;
+import myprojectmessenger.service.SessionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class MessageController {
     }
 
     @GetMapping("/api/chat/{chatId}/message")
-    public Messages getMessage(@RequestHeader(value = "SessionId") String sessionId,
+    public Messages getMessage(@RequestHeader(value = SessionService.SESSION_HEADER_NAME) String sessionId,
                                @PathVariable Long chatId,
                                @RequestParam(required = false, defaultValue = "50") Integer limit) {
         Messages messages = new Messages();
@@ -58,7 +59,7 @@ public class MessageController {
     }
 
     @PostMapping("/api/chat/{chatId}/message")
-    public void addMessage(@RequestHeader(value = "SessionId") String sessionId,
+    public void addMessage(@RequestHeader(value = SessionService.SESSION_HEADER_NAME) String sessionId,
                            @RequestBody MessageModel messageModel,
                            @PathVariable Long chatId) {
         User user = userDao.findUserBySessionId(sessionId);

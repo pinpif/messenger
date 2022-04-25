@@ -4,6 +4,7 @@ import myprojectmessenger.dao.UserDao;
 import myprojectmessenger.entity.User;
 import myprojectmessenger.model.BlockUser;
 import myprojectmessenger.model.UserSearch;
+import myprojectmessenger.service.SessionService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping("/block")
-    public void userBlock(@RequestHeader(value = "SessionId") String sessionId,
+    public void userBlock(@RequestHeader(value = SessionService.SESSION_HEADER_NAME) String sessionId,
                           @RequestBody BlockUser blockUser) {
         User user = userDao.findUserBySessionId(sessionId);
         User block = userDao.findUserById(blockUser.getBlockUserId());
@@ -41,7 +42,7 @@ public class UserController {
     }
 
     @DeleteMapping("/unblock")
-    public void unblockUser(@RequestHeader(value = "SessionId") String sessionId,
+    public void unblockUser(@RequestHeader(value = SessionService.SESSION_HEADER_NAME) String sessionId,
                             @RequestBody BlockUser blockUser) {
         User user = userDao.findUserBySessionId(sessionId);
         User block = userDao.findUserById(blockUser.getBlockUserId());

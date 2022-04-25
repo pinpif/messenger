@@ -8,6 +8,7 @@ import myprojectmessenger.exception.ChatExists;
 import myprojectmessenger.model.ChatDTO;
 import myprojectmessenger.model.ChatModel;
 import myprojectmessenger.model.RecentChats;
+import myprojectmessenger.service.SessionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class ChatController {
     }
 
     @GetMapping
-    public RecentChats chats(@RequestHeader(value = "SessionId") String sessionId) {
+    public RecentChats chats(@RequestHeader(value = SessionService.SESSION_HEADER_NAME) String sessionId) {
         RecentChats recentChats = new RecentChats();
         Set<Chat> chats = chatDao.findRecent10ChatsForUser(userDao.findUserBySessionId(sessionId));
         for (Chat chat : chats) {
@@ -42,7 +43,7 @@ public class ChatController {
     }
 
     @PostMapping
-    public RecentChats addChat(@RequestHeader(value = "SessionId") String sessionId,
+    public RecentChats addChat(@RequestHeader(value = SessionService.SESSION_HEADER_NAME) String sessionId,
                                @RequestBody ChatModel chatModel) {
         Chat chat = new Chat();
         Set<User> users = new HashSet<>();

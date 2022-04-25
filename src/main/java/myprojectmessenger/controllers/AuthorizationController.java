@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import myprojectmessenger.dao.AuthorizationDao;
 import myprojectmessenger.entity.User;
+import myprojectmessenger.service.SessionService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Base64Utils;
@@ -34,13 +35,13 @@ public class AuthorizationController {
         User user = authorizationDao.findUserByLoginAndPassword(usernameAndPassword[0], usernameAndPassword[1]);
         UUID uuid = UUID.randomUUID();
         authorizationDao.addSession(user, uuid);
-        response.setHeader("SessionId", uuid.toString());
+        response.setHeader(SessionService.SESSION_HEADER_NAME, uuid.toString());
         return new SessionInfo(user, uuid);
     }
 
     @Transactional
     @DeleteMapping("/api/logout")
-    public void logout(@RequestHeader(value = "SessionId") String sessionId) {
+    public void logout(@RequestHeader(value = SessionService.SESSION_HEADER_NAME) String sessionId) {
         authorizationDao.logout(sessionId);
     }
 
