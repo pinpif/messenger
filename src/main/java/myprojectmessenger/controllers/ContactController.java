@@ -1,9 +1,7 @@
 package myprojectmessenger.controllers;
 
-import myprojectmessenger.dao.ContactDao;
-import myprojectmessenger.dao.UserDao;
-import myprojectmessenger.entity.User;
 import myprojectmessenger.model.ContactModel;
+import myprojectmessenger.service.ContactService;
 import myprojectmessenger.service.SessionService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,19 +10,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ContactController {
-    private final ContactDao contactDao;
-    private final UserDao userDao;
+    private final ContactService contactServise;
 
-    public ContactController(ContactDao contactDao, UserDao userDao) {
-        this.contactDao = contactDao;
-        this.userDao = userDao;
+    public ContactController(ContactService contactServise) {
+        this.contactServise = contactServise;
+
     }
 
     @PostMapping("/api/contact")
     public void addedFriends(@RequestHeader(name = SessionService.SESSION_HEADER_NAME) String sessionId,
                              @RequestBody ContactModel contactModel) {
-        User user = userDao.findUserBySessionId(sessionId);
-        User contact = userDao.findUserById(contactModel.getContactId());
-        contactDao.addContact(user, contact);
+        contactServise.addedFriends(sessionId, contactModel);
     }
 }
