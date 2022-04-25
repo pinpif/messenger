@@ -1,8 +1,8 @@
 package myprojectmessenger.controllers;
 
-import myprojectmessenger.dao.AuthorizationDao;
 import myprojectmessenger.dao.ChatDao;
 import myprojectmessenger.dao.MessageDao;
+import myprojectmessenger.dao.UserDao;
 import myprojectmessenger.entity.Chat;
 import myprojectmessenger.entity.Message;
 import myprojectmessenger.entity.User;
@@ -22,12 +22,12 @@ import java.util.Date;
 public class MessageController {
     private final MessageDao messageDao;
     private final ChatDao chatDao;
-    private final AuthorizationDao authorizationDao;
+    private final UserDao userDao;
 
-    public MessageController(MessageDao messageDao, ChatDao chatDao, AuthorizationDao authorizationDao) {
+    public MessageController(MessageDao messageDao, ChatDao chatDao, UserDao userDao) {
         this.messageDao = messageDao;
         this.chatDao = chatDao;
-        this.authorizationDao = authorizationDao;
+        this.userDao = userDao;
     }
 
     @GetMapping("/api/chat/{chatId}/message")
@@ -35,7 +35,7 @@ public class MessageController {
                                @PathVariable Long chatId,
                                @RequestParam(required = false, defaultValue = "50") Integer limit) {
         Messages messages = new Messages();
-        for (Message message : messageDao.getMessages(chatDao.findById(chatId), authorizationDao.findUserBySessionId(sessionId), limit)) {
+        for (Message message : messageDao.getMessages(chatDao.findById(chatId), userDao.findUserBySessionId(sessionId), limit)) {
             MessageDto messageDto = new MessageDto();
             messageDto.setDate(message.getDate());
             if (message.getAuthor().getName() != null) {
@@ -61,7 +61,7 @@ public class MessageController {
     public void addMessage(@RequestHeader(value = "SessionId") String sessionId,
                            @RequestBody MessageModel messageModel,
                            @PathVariable Long chatId) {
-        User user = authorizationDao.findUserBySessionId(sessionId);
+        User user = userDao.findUserBySessionId(sessionId);
         Date date = messageModel.getDate();
         String text = messageModel.getText();
         Chat chat = chatDao.findById(chatId);

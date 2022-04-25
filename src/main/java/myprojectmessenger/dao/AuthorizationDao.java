@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -17,6 +16,7 @@ import java.util.UUID;
 public class AuthorizationDao {
     private final EntityManager entityManager;
 
+    @SuppressWarnings("unchecked")
     public User findUserByLoginAndPassword(String login, String password) {
         List<User> resultList = entityManager.createQuery("select u from User u where u.account.login = :login and u.account.password = :password")
                 .setParameter("login", login)
@@ -40,21 +40,6 @@ public class AuthorizationDao {
                 .getResultList().isEmpty();
     }
 
-    public User findUserBySessionId(String sessionId) {
-        return (User) entityManager.createQuery("select s.user from Session s where s.sessionId = :sessionId")
-                .setParameter("sessionId", sessionId)
-                .getSingleResult();
-    }
-
-    public User findUserFromLogin(String login) {
-        return (User) entityManager.createQuery("select u from User where u.account.login = :login")
-                .setParameter("login",login)
-                .getSingleResult();
-    }
-    public List<User> findUsersByIds(Collection<Long> ids) {
-       return entityManager.createQuery("select u from User u where u.id in (:ids)")
-                .setParameter("ids",ids).getResultList();
-    }
     public void logout(String sessionId){
         entityManager.createQuery("delete  from Session s where s.sessionId=:sessionId")
                 .setParameter("sessionId",sessionId)

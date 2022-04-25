@@ -2,6 +2,7 @@ package myprojectmessenger.dao;
 
 import myprojectmessenger.entity.Chat;
 import myprojectmessenger.entity.Message;
+import myprojectmessenger.entity.MessageState;
 import myprojectmessenger.entity.User;
 import myprojectmessenger.exception.BlockedByUserException;
 import myprojectmessenger.exception.NotInChatException;
@@ -37,28 +38,49 @@ public class MessageDao {
     }
 
     @Transactional
-    public void addMessage(Chat chat, String text, Date date, User user) {
+    public void addMessage(Chat chat, String text, Date date, User author) {
         if (chat.getType() == ChatType.PERSONAL) {
-            Boolean isBlockedByUser = (Boolean) entityManager.createQuery("select count(c) > 0 from Chat c join c.users u join u.blockLists b where u != :user and b.blockedUser = :user")
-                    .setParameter("user", user)
+            Boolean isBlockedByUser = (Boolean) entityManager
+                    .createQuery("select count(c) > 0 from Chat c " +
+                            "join c.users u " +
+                            "join u.blockLists b " +
+                            "where c = :chat and u != :author and b.blockedUser = :author")
+                    .setParameter("author", author)
+                    .setParameter("chat", chat)
                     .getSingleResult();
             if (isBlockedByUser) {
                 throw new BlockedByUserException();
             }
         }
+        Message message = createMessage(chat, text, date, author);
+        entityManager.persist(message);
+
+        saveMessageStates(chat, author, message);
+    }
+
+    private void saveMessageStates(Chat chat, User user, Message message) {
+        for (User chatUser : chat.getUsers()) {
+            MessageState messageState = createMessageState(user, message, chatUser);
+            entityManager.persist(messageState);
+        }
+    }
+
+    private MessageState createMessageState(User author, Message message, User user) {
+        MessageState messageState = new MessageState();
+        messageState.setMessage(message);
+        if (user.equals(author)) {
+            messageState.setState(true);
+        }
+        messageState.setUser(user);
+        return messageState;
+    }
+
+    private Message createMessage(Chat chat, String text, Date date, User user) {
         Message message = new Message();
         message.setDate(date);
         message.setChat(chat);
         message.setAuthor(user);
         message.setMessage(text);
-        entityManager.persist(message);
-    }
-
-    public void addFile(Chat chat, String fileName, byte[] bytes) {
-
-    }
-
-    public void showMessage() {
-
+        return message;
     }
 }
