@@ -3,7 +3,7 @@ package myprojectmessenger.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Messages {
+public class MessagesModel {
     private List<MessageDto> messages = new ArrayList<>();
 
     public List<MessageDto> getMessages() {

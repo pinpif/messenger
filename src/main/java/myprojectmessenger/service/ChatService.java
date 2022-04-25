@@ -9,7 +9,6 @@ import myprojectmessenger.model.ChatModel;
 import myprojectmessenger.model.ChatType;
 import myprojectmessenger.model.RecentChats;
 import org.springframework.stereotype.Service;
-
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;

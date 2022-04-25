@@ -1,5 +1,6 @@
 package myprojectmessenger.controllers;
 
+import myprojectmessenger.AuthorizationUtil;
 import myprojectmessenger.model.SessionInfo;
 import myprojectmessenger.service.AuthorizationService;
 import myprojectmessenger.service.SessionService;
@@ -24,7 +25,8 @@ public class AuthorizationController {
     public SessionInfo authorization(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
             HttpServletResponse response) {
-        SessionInfo sessionInfo = authorizationService.authorization(authorization);
+        String[] usernamePassword = AuthorizationUtil.parseUsernamePassword(authorization);
+        SessionInfo sessionInfo = authorizationService.authorization(usernamePassword[0], usernamePassword[1]);
         response.setHeader(SessionService.SESSION_HEADER_NAME, sessionInfo.getUuid().toString());
         return sessionInfo;
     }

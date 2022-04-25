@@ -18,15 +18,15 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserSearch> searchUser(@RequestParam String searchString,
-                                       @RequestParam(value = "limit", defaultValue = "20", required = false) int limit) {
-        return userService.searchUser(searchString, limit);
+    public List<UserSearch> findUsers(@RequestParam String searchString,
+                                      @RequestParam(value = "limit", defaultValue = "20", required = false) int limit) {
+        return userService.findUsers(searchString, limit);
     }
 
     @PostMapping("/block")
-    public void userBlock(@RequestHeader(value = SessionService.SESSION_HEADER_NAME) String sessionId,
+    public void blockUser(@RequestHeader(value = SessionService.SESSION_HEADER_NAME) String sessionId,
                           @RequestBody BlockUser blockUser) {
-        userService.userBlock(sessionId, blockUser);
+        userService.blockUser(sessionId, blockUser);
     }
 
     @DeleteMapping("/unblock")

@@ -10,16 +10,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ContactController {
-    private final ContactService contactServise;
+    private final ContactService contactService;
 
-    public ContactController(ContactService contactServise) {
-        this.contactServise = contactServise;
-
+    public ContactController(ContactService contactService) {
+        this.contactService = contactService;
     }
 
     @PostMapping("/api/contact")
-    public void addedFriends(@RequestHeader(name = SessionService.SESSION_HEADER_NAME) String sessionId,
+    public void addContact(@RequestHeader(name = SessionService.SESSION_HEADER_NAME) String sessionId,
                              @RequestBody ContactModel contactModel) {
-        contactServise.addedFriends(sessionId, contactModel);
+        contactService.addContact(sessionId, contactModel);
     }
 }

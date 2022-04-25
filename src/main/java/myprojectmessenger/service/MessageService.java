@@ -9,10 +9,11 @@ import myprojectmessenger.entity.User;
 import myprojectmessenger.model.ContentDto;
 import myprojectmessenger.model.MessageDto;
 import myprojectmessenger.model.MessageModel;
-import myprojectmessenger.model.Messages;
+import myprojectmessenger.model.MessagesModel;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class MessageService {
@@ -34,26 +35,43 @@ public class MessageService {
         messageDao.addMessage(chat, text, date, user);
     }
 
-    public Messages getMessage(String sessionId, Long chatId, Integer limit) {
-        Messages messages = new Messages();
-        for (Message message : messageDao.getMessages(chatDao.findById(chatId), userDao.findUserBySessionId(sessionId), limit)) {
-            MessageDto messageDto = new MessageDto();
-            messageDto.setDate(message.getDate());
-            if (message.getAuthor().getName() != null) {
-                messageDto.setAuthor(message.getAuthor().getName());
-            } else {
-                messageDto.setAuthor(message.getAuthor().getAccount().getLogin());
-            }
-            messageDto.setAuthorId(message.getAuthor().getId());
-            messageDto.setMessage(message.getMessage());
-            if (message.getContent() != null) {
-                ContentDto contentDto = new ContentDto();
-                contentDto.setFilename(message.getContent().getName());
-                contentDto.setContent(message.getContent().getContent());
-                messageDto.setContentDto(contentDto);
-            }
-            messages.getMessages().add(messageDto);
+    public MessagesModel getMessage(String sessionId, Long chatId, Integer limit) {
+        Chat chat = chatDao.findById(chatId);
+        User user = userDao.findUserBySessionId(sessionId);
+        List<Message> messages = messageDao.getMessages(chat, user, limit);
+        return convertToModel(messages);
+    }
+
+    private MessagesModel convertToModel(List<Message> messages) {
+        MessagesModel messagesModel = new MessagesModel();
+        for (Message message : messages) {
+            MessageDto messageDto = convertToMessageDto(message);
+            messagesModel.getMessages().add(messageDto);
         }
-        return messages;
+        return messagesModel;
+    }
+
+    private MessageDto convertToMessageDto(Message message) {
+        MessageDto messageDto = new MessageDto();
+        messageDto.setDate(message.getDate());
+        if (message.getAuthor().getName() != null) {
+            messageDto.setAuthor(message.getAuthor().getName());
+        } else {
+            messageDto.setAuthor(message.getAuthor().getAccount().getLogin());
+        }
+        messageDto.setAuthorId(message.getAuthor().getId());
+        messageDto.setMessage(message.getMessage());
+        if (message.getContent() != null) {
+            ContentDto contentDto = convertToContentDto(message);
+            messageDto.setContentDto(contentDto);
+        }
+        return messageDto;
+    }
+
+    private ContentDto convertToContentDto(Message message) {
+        ContentDto contentDto = new ContentDto();
+        contentDto.setFilename(message.getContent().getName());
+        contentDto.setContent(message.getContent().getContent());
+        return contentDto;
     }
 }

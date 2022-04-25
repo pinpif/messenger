@@ -1,6 +1,7 @@
 package myprojectmessenger.filters;
 
 import myprojectmessenger.dao.AuthorizationDao;
+import myprojectmessenger.service.SessionService;
 import org.springframework.http.HttpStatus;
 
 import javax.servlet.*;
@@ -19,7 +20,7 @@ public class SessionFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
 
-        String sessionId = httpServletRequest.getHeader("SessionId");
+        String sessionId = httpServletRequest.getHeader(SessionService.SESSION_HEADER_NAME);
         if (sessionId == null || !authorizationDao.sessionExist(sessionId)) {
             ((HttpServletResponse) servletResponse).setStatus(HttpStatus.UNAUTHORIZED.value());
         } else {

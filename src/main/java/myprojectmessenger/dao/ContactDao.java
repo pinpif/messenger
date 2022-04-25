@@ -9,13 +9,14 @@ import javax.persistence.EntityManager;
 
 @Component
 public class ContactDao {
-   private final EntityManager entityManager;
+    private final EntityManager entityManager;
 
     public ContactDao(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
+
     @Transactional
-    public void addContact(User user, User userContact){
+    public void addContact(User user, User userContact) {
         Contact contact = new Contact();
         contact.setUser(user);
         contact.setFriend(userContact);

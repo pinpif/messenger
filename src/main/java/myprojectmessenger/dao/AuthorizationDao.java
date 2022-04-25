@@ -40,9 +40,9 @@ public class AuthorizationDao {
                 .getResultList().isEmpty();
     }
 
-    public void logout(String sessionId){
+    public void logout(String sessionId) {
         entityManager.createQuery("delete  from Session s where s.sessionId=:sessionId")
-                .setParameter("sessionId",sessionId)
+                .setParameter("sessionId", sessionId)
                 .executeUpdate();
 
     }

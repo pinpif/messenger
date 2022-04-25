@@ -19,7 +19,7 @@ public class ChatController {
     }
 
     @GetMapping
-    public RecentChats chats(@RequestHeader(value = SessionService.SESSION_HEADER_NAME) String sessionId) {
+    public RecentChats recentChats(@RequestHeader(value = SessionService.SESSION_HEADER_NAME) String sessionId) {
         return chatService.getRecentChats(sessionId);
 
     }

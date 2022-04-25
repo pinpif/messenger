@@ -3,7 +3,7 @@ package myprojectmessenger.controllers;
 import myprojectmessenger.exception.BlockedByUserException;
 import myprojectmessenger.exception.NotInChatException;
 import myprojectmessenger.model.MessageModel;
-import myprojectmessenger.model.Messages;
+import myprojectmessenger.model.MessagesModel;
 import myprojectmessenger.service.MessageService;
 import myprojectmessenger.service.SessionService;
 import org.springframework.http.HttpStatus;
@@ -14,15 +14,14 @@ import org.springframework.web.bind.annotation.*;
 public class MessageController {
     private final MessageService messageService;
 
-
     public MessageController(MessageService messageService) {
         this.messageService = messageService;
     }
 
     @GetMapping("/api/chat/{chatId}/message")
-    public Messages getMessage(@RequestHeader(value = SessionService.SESSION_HEADER_NAME) String sessionId,
-                               @PathVariable Long chatId,
-                               @RequestParam(required = false, defaultValue = "50") Integer limit) {
+    public MessagesModel getMessage(@RequestHeader(value = SessionService.SESSION_HEADER_NAME) String sessionId,
+                                    @PathVariable Long chatId,
+                                    @RequestParam(required = false, defaultValue = "50") Integer limit) {
         return messageService.getMessage(sessionId, chatId, limit);
     }
 

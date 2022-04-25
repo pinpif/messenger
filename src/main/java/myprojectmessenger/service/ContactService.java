@@ -16,8 +16,7 @@ public class ContactService {
         this.userDao = userDao;
     }
 
-    public void addedFriends(String sessionId,
-                             ContactModel contactModel) {
+    public void addContact(String sessionId, ContactModel contactModel) {
         User user = userDao.findUserBySessionId(sessionId);
         User contact = userDao.findUserById(contactModel.getContactId());
         contactDao.addContact(user, contact);

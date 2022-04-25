@@ -6,8 +6,8 @@ import myprojectmessenger.model.BlockUser;
 import myprojectmessenger.model.UserSearch;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -17,25 +17,30 @@ public class UserService {
         this.userDao = userDao;
     }
 
-    public List<UserSearch> searchUser(String searchString, int limit) {
-        List<UserSearch> userSearches = new ArrayList<>();
-        for (User user : userDao.findUsers(searchString, limit)) {
-            UserSearch userSearch = new UserSearch();
-            userSearch.setId(user.getId());
-            userSearch.setName(user.getName());
-            userSearch.setLogin(user.getAccount().getLogin());
-            userSearches.add(userSearch);
-        }
-        return userSearches;
+    public List<UserSearch> findUsers(String searchString, int limit) {
+        return userDao.findUsers(searchString, limit)
+                .stream()
+                .map(this::convertToSearchUser)
+                .collect(Collectors.toList());
     }
 
-    public void userBlock(String sessionId, BlockUser blockUser) {
-        userDao.blockUser(userDao.findUserBySessionId(sessionId),
-                userDao.findUserById(blockUser.getBlockUserId()));
+    private UserSearch convertToSearchUser(User user) {
+        UserSearch userSearch = new UserSearch();
+        userSearch.setId(user.getId());
+        userSearch.setName(user.getName());
+        userSearch.setLogin(user.getAccount().getLogin());
+        return userSearch;
+    }
+
+    public void blockUser(String sessionId, BlockUser blockUser) {
+        User user = userDao.findUserBySessionId(sessionId);
+        User otherUser = userDao.findUserById(blockUser.getBlockUserId());
+        userDao.blockUser(user, otherUser);
     }
 
     public void unblockUser(String sessionId, BlockUser blockUser) {
-        userDao.unblockUser(userDao.findUserBySessionId(sessionId),
-                userDao.findUserById(blockUser.getBlockUserId()));
+        User user = userDao.findUserBySessionId(sessionId);
+        User otherUser = userDao.findUserById(blockUser.getBlockUserId());
+        userDao.unblockUser(user, otherUser);
     }
 }
