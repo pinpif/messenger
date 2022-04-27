@@ -27,6 +27,11 @@ public class UserDao {
     }
 
     @Transactional
+    public void createUser(User user) {
+        entityManager.persist(user);
+    }
+
+    @Transactional
     public void blockUser(User user, User userBlock) {
         BlockList blockList = new BlockList();
         blockList.setUser(user);

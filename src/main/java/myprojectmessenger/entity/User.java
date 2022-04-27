@@ -16,11 +16,11 @@ public class User {
     private long id;
     private String name;
     private int age;
-    //@join
-    @OneToOne
+
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id")
     private Account account;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "status_id")
     private UserStatus status;
 
