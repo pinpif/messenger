@@ -15,6 +15,7 @@ public class Account {
     private long id;
     private String login;
     private String password;
+    private String mail;
     @Column(name = "registration_date")
     private Date registrationDate;
     private boolean status;

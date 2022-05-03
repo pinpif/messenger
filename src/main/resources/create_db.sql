@@ -3,7 +3,8 @@ create table account(
     login text unique not null,
 	password text not null,
 	registration_date timestamp not null,
-	status bool not null
+	status bool not null,
+	mail text
 );
 
 create table users(
@@ -18,6 +19,13 @@ create table user_status(
     id bigserial primary key,
 	date timestamp not null,
 	state bool default false not null
+);
+
+create table recovery_password(
+    id bigserial primary key,
+	code text not null,
+	account_id bigint references account(id) not null,
+	created_date timestamp not null default current_timestamp
 );
 
 create table chat_user(

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8">
+  <title>Поле с паролем</title>
+</head>
+<body>
+<form th:method="POST" th:action="@{/}" th:object="${password}">
+  <p><strong>Пароль:</strong>
+    <input type="password" maxlength="25" size="40" name="password"></p>
+  <p><strong>Повторите пароль:</strong>
+    <input type="password" maxlength="25" size="40" name="repeatPassword"></p>
+  <p><input type="submit" value="Войти"></p>
+</form>
+</body>
+</html>
+

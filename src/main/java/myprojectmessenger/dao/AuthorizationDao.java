@@ -1,12 +1,14 @@
 package myprojectmessenger.dao;
 
 import lombok.AllArgsConstructor;
+import myprojectmessenger.entity.Account;
 import myprojectmessenger.entity.Session;
 import myprojectmessenger.entity.User;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -24,7 +26,11 @@ public class AuthorizationDao {
                 .getResultList();
         return resultList.isEmpty() ? null : resultList.get(0);
     }
-
+    public Account findUserByMail(String mail) {
+       return (Account) entityManager.createQuery("select a.id from Account a where a.mail =: mail")
+                .setParameter("mail",mail)
+               .getSingleResult();
+    }
     @Transactional
     public void addSession(User user, UUID uuid) {
         Session session = new Session();
